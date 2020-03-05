@@ -1,25 +1,20 @@
 package com.solutions.fob.userauthentication;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.time.LocalDate;
 import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -100,20 +95,20 @@ class UserAuthenticationApplicationTests {
     tokens.put("refresh_token", jsonParser.parseMap(resultString).get("refresh_token").toString());
     return tokens;
   }
-  
+
   private HashMap<String, String> refreshAccessToken(String refreshToken) throws Exception {
     final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("grant_type", "refresh_token");
     params.add("scope", SCOPE);
     params.add("refresh_token", refreshToken);
-    
+
     ResultActions result = mockMvc
         .perform(post("/oauth/token").contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .params(params).with(httpBasic(CLIENT_ID, CLIENT_SECRET)).accept(CONTENT_TYPE))
         .andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE));
-    
+
     String resultString = result.andReturn().getResponse().getContentAsString();
-    
+
     JacksonJsonParser jsonParser = new JacksonJsonParser();
     HashMap<String, String> tokens = new HashMap<>();
     tokens.put("access_token", jsonParser.parseMap(resultString).get("access_token").toString());
@@ -146,29 +141,31 @@ class UserAuthenticationApplicationTests {
       assertTrue(false);
     }
   }
-  
+
   @Test
   public void getUserLoggedIn() throws Exception {
     String accessToken = this.obtainTokens(EMAIL2, PASSWORD).get("access_token");
-    mockMvc.perform(get("/users").header("Authorization", "Bearer " + accessToken)).andExpect(status().isOk());
+    mockMvc.perform(get("/users").header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk());
   }
-  
+
   @Test
   public void getUserLoggedInWithoutToken() throws Exception {
     mockMvc.perform(get("/users")).andExpect(status().isUnauthorized());
   }
-  
+
   @Test
   public void refreshToken() throws Exception {
     HashMap<String, String> tokens = this.obtainTokens(EMAIL2, PASSWORD);
     String refreshed = this.refreshAccessToken(tokens.get("refresh_token")).get("access_token");
     assertTrue(!refreshed.equals(tokens.get("access_token")));
   }
-  
+
   @Test
   public void logout() throws Exception {
     String accessToken = this.obtainTokens(EMAIL2, PASSWORD).get("access_token");
-    mockMvc.perform(delete("/users/logout").header("Authorization", "Bearer " + accessToken)).andExpect(status().isOk());
+    mockMvc.perform(delete("/users/logout").header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk());
   }
 
 }
