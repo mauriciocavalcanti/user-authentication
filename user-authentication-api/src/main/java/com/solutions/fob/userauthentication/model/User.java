@@ -24,6 +24,19 @@ public class User implements UserDetails {
   private String email;
 
   private LocalDate birthDate;
+  
+  public User() {}
+  
+  public User(String firstName, String lastName, String idCode, String password, String email,
+      LocalDate birthDate) {
+    super();
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.idCode = idCode;
+    this.password = password;
+    this.email = email;
+    this.birthDate = birthDate;
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -109,6 +122,12 @@ public class User implements UserDetails {
 
   public void setBirthDate(LocalDate birthDate) {
     this.birthDate = birthDate;
+  }
+
+  @Override
+  public String toString() {
+    return "{\"id\":\"" + id + "\",\"firstName\":\"" + firstName + "\",\"lastName\":\"" + lastName + "\",\"idCode\":\""
+        + idCode + "\",\"password\":\"" + password + "\",\"email\":\"" + email + "\",\"birthDate\":\"" + birthDate + "\"}";
   }
 
 }
