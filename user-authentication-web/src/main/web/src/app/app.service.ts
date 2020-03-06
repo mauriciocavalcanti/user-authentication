@@ -31,8 +31,10 @@ export class AppService {
     }
 
     saveToken(token: Token) {
+        console.log(token)
         this._cookies.set('access_token', token.access_token, token.expires_in)
         this._cookies.set('refresh_token', token.refresh_token, 300)
+        console.log(this._cookies.getAll())
     }
 
     postUser(resourceUrl, user): Observable<User> {
