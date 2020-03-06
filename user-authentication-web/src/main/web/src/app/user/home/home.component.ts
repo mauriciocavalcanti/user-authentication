@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   }
 
   logout(){
-    this._service.logout(this.homeUrl + '/logout');
+    this._service.logout(this.homeUrl + '/logout').subscribe;
   }
   
   refreshToken(){
