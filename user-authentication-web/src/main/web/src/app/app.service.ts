@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Token } from './models/token';
+import { User } from './models/user';
 
 @Injectable()
 export class AppService {
@@ -14,31 +15,52 @@ export class AppService {
     httpOptions = {
         headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Basic ' + btoa("fob-client:fob-secret") })
     }
+
     getAccessToken(data): Observable<Token> {
         let params = new URLSearchParams();
         params.append('username', data.username);
         params.append('password', data.password);
         params.append('grant_type', 'password');
         params.append('scope', 'any');
-        console.log('oi')
+
         return this._http.post<Token>('http://localhost:8080/oauth/token', params.toString(), this.httpOptions).pipe(
             retry(2),
             catchError(this.handleError)
-          )
+        )
 
     }
 
-    postResource(resourceUrl, data) {
-
+    saveToken(token: Token) {
+        this._cookies.set('access_token', token.access_token, token.expires_in)
+        this._cookies.set('refresh_token', token.refresh_token, 300)
     }
 
-    getResource(resourceUrl) {
-
+    postUser(resourceUrl, user): Observable<User> {
+        return this._http.post<User>(resourceUrl, JSON.stringify(user), this.httpOptions)
+            .pipe(
+                retry(2),
+                catchError(this.handleError)
+            )
     }
 
-    logout() {
+    getUser(resourceUrl): Observable<User> {
+        return this._http.get<User>(resourceUrl,
+            { headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
+            .pipe(
+                retry(2),
+                catchError(this.handleError)
+            )
+    }
+
+    logout(resourceUrl) {
         this._cookies.delete('access_token')
         this._cookies.delete('refresh_token')
+        return this._http.delete(resourceUrl,
+            { headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
+            .pipe(
+                retry(2),
+                catchError(this.handleError)
+            )
     }
 
     refreshToken() {
@@ -46,17 +68,22 @@ export class AppService {
         params.append('refresh_token', this._cookies.get('refresh_token'));
         params.append('grant_type', 'refresh_token');
         params.append('scope', 'any');
+
+        return this._http.post<Token>('http://localhost:8080/oauth/token', params.toString(), this.httpOptions).pipe(
+            retry(2),
+            catchError(this.handleError)
+        )
     }
 
     handleError(error: HttpErrorResponse) {
         let errorMessage = '';
         if (error.error instanceof ErrorEvent) {
-          errorMessage = error.error.message;
+            errorMessage = error.error.message;
         } else {
-          errorMessage = `Código do erro: ${error.status}, ` + `menssagem: ${error.message}`;
+            errorMessage = `Error code: ${error.status}, ` + `message: ${error.message}`;
         }
         console.log(errorMessage);
         return throwError(errorMessage);
-      };
+    };
 
 }

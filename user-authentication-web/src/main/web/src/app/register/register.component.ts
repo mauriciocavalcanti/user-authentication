@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service'
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-register',
@@ -13,12 +14,16 @@ export class RegisterComponent implements OnInit {
 
   private registerUrl = 'http://localhost:8080/users';
 
+  user = {} as User;
+
   ngOnInit(): void {
   }
 
   register(form) {
     console.log(form.value);
-    this._service.postResource(this.registerUrl, form.value)
+    this._service.postUser(this.registerUrl, form.value).subscribe((user: User) => {
+      this.user = user;
+    });
   }
 
 }

@@ -21,6 +21,6 @@ export class LoginComponent implements OnInit {
     this._service.getAccessToken(form.value).subscribe((token: Token) => {
       this.token = token;
     });
-    console.log(this.token)
+    this._service.saveToken(this.token);
   }
 }
