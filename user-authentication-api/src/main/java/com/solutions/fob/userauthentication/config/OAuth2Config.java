@@ -75,7 +75,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-      http.authorizeRequests().antMatchers(HttpMethod.POST, "/users").permitAll().and()
+      http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/users").permitAll().and()
           .authorizeRequests().antMatchers("/oauth/token/**").permitAll().anyRequest()
           .fullyAuthenticated();
     }
