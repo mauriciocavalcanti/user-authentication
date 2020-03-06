@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from 'src/app/app.service';
 import { User } from 'src/app/models/user';
 import { Token } from 'src/app/models/token';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { Token } from 'src/app/models/token';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private _service: AppService) { }
+  constructor(private _service: AppService, private _router: Router) { }
 
   private homeUrl = 'http://localhost:8080/users';
 
@@ -30,6 +31,7 @@ export class HomeComponent implements OnInit {
 
   logout(){
     this._service.logout(this.homeUrl + '/logout').subscribe;
+    this._router.navigate['/']
   }
   
   refreshToken(){

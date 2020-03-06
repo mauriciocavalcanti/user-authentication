@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service'
 import { Token } from '../models/token';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { Token } from '../models/token';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private _service: AppService) { }
+  constructor(private _service: AppService, private _router: Router) { }
 
   token = {} as Token;
 
@@ -22,5 +23,6 @@ export class LoginComponent implements OnInit {
       this.token = token;
     });
     this._service.saveToken(this.token);
+    this._router.navigate['/user/home']
   }
 }

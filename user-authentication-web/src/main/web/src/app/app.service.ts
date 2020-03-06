@@ -36,7 +36,8 @@ export class AppService {
     }
 
     postUser(resourceUrl, user): Observable<User> {
-        return this._http.post<User>(resourceUrl, JSON.stringify(user), this.httpOptions)
+        return this._http.post<User>(resourceUrl, JSON.stringify(user),
+            { headers: new HttpHeaders({ 'Content-type': 'application/json; charset=utf-8', 'Authorization': 'Basic ' + btoa("fob-client:fob-secret") }) })
             .pipe(
                 retry(2),
                 catchError(this.handleError)
@@ -45,7 +46,7 @@ export class AppService {
 
     getUser(resourceUrl): Observable<User> {
         return this._http.get<User>(resourceUrl,
-            { headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
+            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
             .pipe(
                 retry(2),
                 catchError(this.handleError)
@@ -56,7 +57,7 @@ export class AppService {
         this._cookies.delete('access_token')
         this._cookies.delete('refresh_token')
         return this._http.delete(resourceUrl,
-            { headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
+            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
             .pipe(
                 retry(2),
                 catchError(this.handleError)
