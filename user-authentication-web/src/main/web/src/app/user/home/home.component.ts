@@ -14,8 +14,6 @@ export class HomeComponent implements OnInit {
 
   constructor(private _service: AppService, private _router: Router) { }
 
-  private homeUrl = 'http://localhost:8080/users';
-
   user = {} as User;
   token = {} as Token;
 
@@ -24,14 +22,14 @@ export class HomeComponent implements OnInit {
   }
 
   getUserInfo() {
-    this._service.getUser(this.homeUrl).subscribe((user: User) => {
+    this._service.getUser().subscribe((user: User) => {
       this.user = user;
     });
   }
 
   logout(){
-    this._service.logout(this.homeUrl + '/logout').subscribe;
-    this._router.navigate['/']
+    this._service.logout().subscribe;
+    this._router.navigate['/'];
   }
   
   refreshToken(){

@@ -12,16 +12,13 @@ export class RegisterComponent implements OnInit {
 
   constructor(private _service: AppService) { }
 
-  private registerUrl = 'http://localhost:8080/users';
-
   user = {} as User;
 
   ngOnInit(): void {
   }
 
   register(form) {
-    console.log(form.value);
-    this._service.postUser(this.registerUrl, form.value).subscribe((user: User) => {
+    this._service.postUser(form.value).subscribe((user: User) => {
       this.user = user;
     });
   }

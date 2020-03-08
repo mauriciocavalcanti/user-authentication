@@ -6,9 +6,13 @@ import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Token } from './models/token';
 import { User } from './models/user';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class AppService {
+
+    baseUrl = environment.baseUrl;
+
     constructor(
         private _router: Router, private _http: HttpClient, private _cookies: CookieService) { }
 
@@ -32,13 +36,13 @@ export class AppService {
 
     saveToken(token: Token) {
         console.log(token)
-        this._cookies.set('access_token', token.access_token, token.expires_in)
-        this._cookies.set('refresh_token', token.refresh_token, 300)
+        this._cookies.set('access_token', token.access_token, new Date().getTime() + (1000 * token.expires_in))
+        this._cookies.set('refresh_token', token.refresh_token, new Date().getTime() + (1000 * 300))
         console.log(this._cookies.getAll())
     }
 
-    postUser(resourceUrl, user): Observable<User> {
-        return this._http.post<User>(resourceUrl, JSON.stringify(user),
+    postUser(user): Observable<User> {
+        return this._http.post<User>(this.baseUrl, JSON.stringify(user),
             { headers: new HttpHeaders({ 'Content-type': 'application/json; charset=utf-8', 'Authorization': 'Basic ' + btoa("fob-client:fob-secret") }) })
             .pipe(
                 retry(2),
@@ -46,8 +50,8 @@ export class AppService {
             )
     }
 
-    getUser(resourceUrl): Observable<User> {
-        return this._http.get<User>(resourceUrl,
+    getUser(): Observable<User> {
+        return this._http.get<User>(this.baseUrl,
             { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
             .pipe(
                 retry(2),
@@ -55,10 +59,10 @@ export class AppService {
             )
     }
 
-    logout(resourceUrl) {
+    logout() {
         this._cookies.delete('access_token')
         this._cookies.delete('refresh_token')
-        return this._http.delete(resourceUrl,
+        return this._http.delete(this.baseUrl + '/logout',
             { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
             .pipe(
                 retry(2),
