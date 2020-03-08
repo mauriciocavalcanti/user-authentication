@@ -2,6 +2,7 @@ package com.solutions.fob.userauthentication.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +33,14 @@ public class UserController {
   ConsumerTokenServices tokenServices;
 
   @PostMapping(value = "")
-  public ResponseEntity<User> postUser(@RequestBody User user) {
+  public ResponseEntity<Object> postUser(@Valid @RequestBody User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user = userService.postUser(user);
-    return new ResponseEntity<>(user, HttpStatus.CREATED);
+    try {
+      user = userService.postUser(user);
+      return new ResponseEntity<>(user, HttpStatus.CREATED);
+    } catch (Exception e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
   }
 
   @GetMapping(value = "")

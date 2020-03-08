@@ -30,8 +30,11 @@ public class UserService implements UserDetailsService {
   }
   
   public User postUser(User user) {
-    UserEntity entity = new UserEntity(user);
-    return modelMapper.map(userRepository.save(entity), User.class);
+    if (userRepository.findByEmailOrIdCode(user.getEmail(), user.getIdCode()) == null) {
+      UserEntity entity = new UserEntity(user);
+      return modelMapper.map(userRepository.save(entity), User.class);
+    }
+    throw new IllegalArgumentException("User already exists: " + user.toString());
   }
 
   public User getUser(SecurityContext securityContext) {
