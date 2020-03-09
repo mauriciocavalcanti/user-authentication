@@ -51,8 +51,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
     clients.inMemory().withClient("fob-client").secret(passwordEncoder.encode("fob-secret"))
-        .authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(10000)
-        .refreshTokenValiditySeconds(300000);
+        .authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(10)
+        .refreshTokenValiditySeconds(300);
   }
 
   @Bean
