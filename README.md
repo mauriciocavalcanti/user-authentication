@@ -3,7 +3,7 @@
 Simple user authentication application built with angular 9, spring boot (java 8) and mysql.\
 MySQL db instance is being hosted on heroku to make it easier to run the project.\
 Used OAuth2 for token management and in memory token store.\
-Project is available at https://38833d7f.ngrok.io/ 
+Project is available at https://9ba89710.ngrok.io
  
 
 ## Installation
