@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user';
 import { Token } from 'src/app/models/token';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-home',
@@ -13,14 +14,11 @@ import { filter } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private _service: AppService, private _router: Router) {
+  constructor(private _service: AppService, private _router: Router, private _notifier: NotifierService) {
     this._router.events
       .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
       .subscribe(event => {
-        if (
-          event.id === 1 &&
-          event.url === event.urlAfterRedirects
-        ) {
+        if (event.id === 1 && event.url === event.urlAfterRedirects) {
           this.refreshToken();
         }
       })
@@ -40,9 +38,10 @@ export class HomeComponent implements OnInit {
   getUserInfo() {
     this._service.getUser().subscribe((user: User) => {
       this.user = user;
+      this._notifier.notify('success', 'User information retrieved successfully.');
     }, (error) => {
       this.errorMessage = error;
-      alert(this.errorMessage);
+      this._notifier.notify('error', this.errorMessage);
     });
   }
 
@@ -62,6 +61,10 @@ export class HomeComponent implements OnInit {
     this._service.refreshToken().subscribe((token: Token) => {
       this.token = token;
       this._service.saveToken(this.token);
+      this._notifier.notify('success', 'Token refreshed successfully.');
+    }, (error) => {
+      this.errorMessage = error;
+      this._notifier.notify('error', this.errorMessage);
     });
   }
 

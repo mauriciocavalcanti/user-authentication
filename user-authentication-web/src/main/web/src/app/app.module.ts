@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { UserModule } from './user/user.module';
+import { NotifierModule } from "angular-notifier";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     RegisterComponent,
   ],
   imports: [
+    NotifierModule,
     BrowserModule,
     HttpClientModule,
     FormsModule,

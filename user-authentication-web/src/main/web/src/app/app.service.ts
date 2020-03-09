@@ -81,8 +81,9 @@ export class AppService {
 
     handleError(error: HttpErrorResponse) {
         let errorMessage = '';
-        if (error.error instanceof ErrorEvent) {
-            errorMessage = error.error.message;
+        console.log(error);
+        if (error.error.message) {
+            errorMessage = `Error code: ${error.status}, ` + `message: ${error.error.message}`;
         } else {
             errorMessage = `Error code: ${error.status}, ` + `message: ${error.error.error_description}`;
         }
