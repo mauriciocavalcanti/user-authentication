@@ -1,1 +1,15 @@
-<p>home works!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="nav-link nav-item" (click)="refreshToken()">Refresh Token</a>
+    <a class="nav-link nav-item" (click)="getUserInfo()">Get Logged User Info</a>
+    <a class="nav-link nav-item" (click)="logout()">Logout</a>
+</nav>
+<div *ngIf="user.id">
+    <ul class="list-group">
+        <li class="list-group-item">ID: {{user.id}}</li>
+        <li class="list-group-item">First Name: {{user.firstName}}</li>
+        <li class="list-group-item">Last Name: {{user.lastName}}</li>
+        <li class="list-group-item">Email: {{user.email}}</li>
+        <li class="list-group-item">ID Code: {{user.idCode}}</li>
+        <li class="list-group-item">Birth Date: {{user.birthDate}}</li>
+    </ul>
+</div>

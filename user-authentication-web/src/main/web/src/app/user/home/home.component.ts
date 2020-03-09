@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from 'src/app/app.service';
 import { User } from 'src/app/models/user';
 import { Token } from 'src/app/models/token';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -12,31 +13,56 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private _service: AppService, private _router: Router) { }
+  constructor(private _service: AppService, private _router: Router) {
+    this._router.events
+      .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
+      .subscribe(event => {
+        if (
+          event.id === 1 &&
+          event.url === event.urlAfterRedirects
+        ) {
+          this.refreshToken();
+        }
+      })
+  }
 
   user = {} as User;
   token = {} as Token;
+  timeout;
+  errorMessage: string;
 
   ngOnInit(): void {
-    this.refreshToken()
+    this.timeout = setTimeout(() => {
+      this._router.navigate(['/']);
+    }, 1000 * 300);
   }
 
   getUserInfo() {
     this._service.getUser().subscribe((user: User) => {
       this.user = user;
+    }, (error) => {
+      this.errorMessage = error;
+      alert(this.errorMessage);
     });
   }
 
-  logout(){
-    this._service.logout().subscribe;
-    this._router.navigate['/'];
+  logout() {
+    let logout = this._service.logout();
+    if (logout !== undefined) {
+      logout.subscribe;
+    }
+    this._router.navigate(['/']);
   }
-  
-  refreshToken(){
+
+  refreshToken() {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this._router.navigate(['/']);
+    }, 1000 * 300);
     this._service.refreshToken().subscribe((token: Token) => {
       this.token = token;
+      this._service.saveToken(this.token);
     });
-    this._service.saveToken(this.token);
   }
 
 }
