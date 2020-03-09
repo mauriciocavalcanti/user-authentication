@@ -48,7 +48,12 @@ export class HomeComponent implements OnInit {
   logout() {
     let logout = this._service.logout();
     if (logout !== undefined) {
-      logout.subscribe;
+      logout.subscribe(() => {
+        this._notifier.notify('success', 'User logged out successfully.');
+      }, (error) => {
+        this.errorMessage = error;
+        this._notifier.notify('error', this.errorMessage);
+      });
     }
     this._router.navigate(['/']);
   }
