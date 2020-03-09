@@ -1,42 +1,53 @@
 <div class="card">
     <h5 class="card-header">Register a new user</h5>
     <div class="card-body">
-        <form #myform="ngForm" (ngSubmit)="register(myform)" class="form form-register">
+        <form (ngSubmit)="register()" class="form form-register" [formGroup]="registerForm">
 
-            <div class="form-group">
-                <label class="user" for="register-firstName"><span class="hidden">First Name</span></label>
-                <input name="firstName" id="register-firstName" type="text" class="form-control" placeholder="First Name"
-                    ngModel required>
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label class="user" for="register-firstName"><span class="hidden">First Name</span></label>
+                    <input name="firstName" id="register-firstName" type="text" class="form-control" placeholder="First Name"
+                        formControlName="firstName" required [class.is-invalid]="isFieldValid(registerForm.get('firstName'))">
+                    <div class="invalid-feedback">
+                        Please choose a first name.
+                    </div>
+                </div>
+                <div class="form-group col-6">
+                    <label class="user" for="register-lastName"><span class="hidden">Last Name</span></label>
+                    <input name="lastName" id="register-lastName" type="text" class="form-control" placeholder="Last Name"
+                        formControlName="lastName" required [class.is-invalid]="isFieldValid(registerForm.get('lastName'))">
+                </div>
             </div>
-            <div class="form-group">
-                <label class="user" for="register-lastName"><span class="hidden">Last Name</span></label>
-                <input name="lastName" id="register-lastName" type="text" class="form-control" placeholder="Last Name"
-                    ngModel required>
-            </div>
+
             <div class="form-group">
                 <label class="user" for="register-birthDate"><span class="hidden">Birth Date</span></label>
                 <input name="birthDate" id="register-birthDate" type="text" class="form-control" placeholder="Birth Date"
-                    ngModel required>
+                    formControlName="birthDate" required [class.is-invalid]="isFieldValid(registerForm.get('birthDate'))">
             </div>
             <div class="form-group">
                 <label class="user" for="register-idCode"><span class="hidden">Id Code</span></label>
-                <input name="idCode" id="register-idCode" type="text" class="form-control" placeholder="Id Code" ngModel
-                    required>
+                <input name="idCode" id="register-idCode" type="text" class="form-control" placeholder="Id Code"
+                    formControlName="idCode" required [class.is-invalid]="isFieldValid(registerForm.get('idCode'))">
             </div>
+
+
             <div class="form-group">
                 <label class="user" for="register-email"><span class="hidden">Email</span></label>
-                <input name="email" id="register-email" type="email" class="form-control" placeholder="Email" ngModel
-                    required>
+                <input name="email" id="register-email" type="email" class="form-control" placeholder="Email"
+                    formControlName="email" required [class.is-invalid]="isFieldValid(registerForm.get('email'))">
+                <div class="invalid-feedback">
+                    Please enter a valid e-mail address.
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="lock" for="register-password"><span class="hidden">Password</span></label>
                 <input name="password" id="register-password" type="password" class="form-control" placeholder="Password"
-                    ngModel required>
+                    formControlName="password" required [class.is-invalid]="isFieldValid(registerForm.get('password'))">
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-add-car">Register</button>
+                <button type="submit" class="btn btn-primary" [disabled]="registerForm.invalid">Register</button>
                 <a routerLink="/" class="btn btn-link">Login</a>
             </div>
         </form>

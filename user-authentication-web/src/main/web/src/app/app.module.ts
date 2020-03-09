@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { UserModule } from './user/user.module';
@@ -20,6 +20,7 @@ import { WINDOW_PROVIDERS } from 'src/_helpers/window.provider';
     RegisterComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     NotifierModule,
     BrowserModule,
     HttpClientModule,
