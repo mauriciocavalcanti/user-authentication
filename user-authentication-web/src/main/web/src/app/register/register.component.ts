@@ -3,6 +3,7 @@ import { AppService } from '../app.service'
 import { User } from '../models/user';
 import { NotifierService } from 'angular-notifier';
 import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { CustomValidators } from 'src/_helpers/custom.validator';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +25,7 @@ export class RegisterComponent implements OnInit {
       firstName: new FormControl(this.user.firstName, Validators.required),
       lastName: new FormControl(this.user.lastName, Validators.required),
       email: new FormControl(this.user.email, [Validators.required, Validators.email]),
-      birthDate: new FormControl(this.user.birthDate, Validators.required),
+      birthDate: new FormControl(this.user.birthDate, [Validators.required, CustomValidators.dateValidator]),
       idCode: new FormControl(this.user.idCode, Validators.required),
       password: new FormControl(this.user.password, Validators.required),
     });

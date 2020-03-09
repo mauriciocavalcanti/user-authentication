@@ -21,7 +21,7 @@
 
             <div class="form-group">
                 <label class="user" for="register-birthDate"><span class="hidden">Birth Date</span></label>
-                <input name="birthDate" id="register-birthDate" type="text" class="form-control" placeholder="Birth Date"
+                <input name="birthDate" id="register-birthDate" type="text" class="form-control" placeholder="DD/MM/YYYY" maxlength="10"
                     formControlName="birthDate" required [class.is-invalid]="isFieldValid(registerForm.get('birthDate'))">
             </div>
             <div class="form-group">
