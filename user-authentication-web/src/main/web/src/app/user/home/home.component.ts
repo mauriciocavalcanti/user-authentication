@@ -5,6 +5,7 @@ import { Token } from 'src/app/models/token';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NotifierService } from 'angular-notifier';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,7 @@ import { NotifierService } from 'angular-notifier';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private _service: AppService, private _router: Router, private _notifier: NotifierService) {
+  constructor(private _service: AppService, private _router: Router, private _notifier: NotifierService, private _cookies: CookieService) {
     this._router.events
       .pipe(filter((rs): rs is NavigationEnd => rs instanceof NavigationEnd))
       .subscribe(event => {
@@ -30,13 +31,15 @@ export class HomeComponent implements OnInit {
   errorMessage: string;
 
   ngOnInit(): void {
+    this.token.access_token = this._cookies.get('access_token');
+    this.token.refresh_token = this._cookies.get('refresh_token');
     this.timeout = setTimeout(() => {
       this._router.navigate(['/']);
     }, 1000 * 300);
   }
 
   getUserInfo() {
-    this._service.getUser().subscribe((user: User) => {
+    this._service.getUser(this.token).subscribe((user: User) => {
       this.user = user;
       this._notifier.notify('success', 'User information retrieved successfully.');
     }, (error) => {
@@ -46,14 +49,16 @@ export class HomeComponent implements OnInit {
   }
 
   logout() {
-    let logout = this._service.logout();
-    if (logout !== undefined) {
-      logout.subscribe(() => {
+    if(this._cookies.get('access_token')){
+      this._service.logout().subscribe(() => {
         this._notifier.notify('success', 'User logged out successfully.');
       }, (error) => {
         this.errorMessage = error;
         this._notifier.notify('error', this.errorMessage);
       });
+    } else {
+      this._cookies.delete('refresh_token');
+      this._notifier.notify('success', 'User logged out successfully.');
     }
     this._router.navigate(['/']);
   }

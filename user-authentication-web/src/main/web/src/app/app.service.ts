@@ -33,9 +33,11 @@ export class AppService {
     }
 
     saveToken(token: Token) {
+        var expireDate = new Date();
+        expireDate.setSeconds(expireDate.getSeconds() + token.expires_in);
         var expireDateRefresh = new Date();
         expireDateRefresh.setSeconds(expireDateRefresh.getSeconds() + 300);
-        this._cookies.set('access_token', token.access_token, expireDateRefresh, '/', 'localhost', false, 'Strict');
+        this._cookies.set('access_token', token.access_token, expireDate, '/', 'localhost', false, 'Strict');
         this._cookies.set('refresh_token', token.refresh_token, expireDateRefresh, '/', 'localhost', false, 'Strict');
     }
 
@@ -47,24 +49,23 @@ export class AppService {
             )
     }
 
-    getUser(): Observable<User> {
+    getUser(currentToken: Token): Observable<User> {
         return this._http.get<User>(this.baseUrl + '/users',
-            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
+            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + currentToken.access_token }) })
             .pipe(
                 catchError(this.handleError)
             )
     }
 
     logout() {
-        if (this._cookies.get('access_token')) {
-            this._cookies.delete('access_token');
-            this._cookies.delete('refresh_token');
-            return this._http.delete(this.baseUrl + '/users/logout',
-                { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
-                .pipe(
-                    catchError(this.handleError)
-                )
-        }
+        let accessToken = this._cookies.get('access_token');
+        this._cookies.delete('access_token');
+        this._cookies.delete('refresh_token');
+        return this._http.delete(this.baseUrl + '/users/logout',
+            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + accessToken }) })
+            .pipe(
+                catchError(this.handleError)
+            )
     }
 
     refreshToken() {
@@ -81,7 +82,6 @@ export class AppService {
 
     handleError(error: HttpErrorResponse) {
         let errorMessage = '';
-        console.log(error);
         if (error.error.message) {
             errorMessage = `Error code: ${error.status}, ` + `message: ${error.error.message}`;
         } else {
