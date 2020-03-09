@@ -58,11 +58,8 @@ export class AppService {
     }
 
     logout() {
-        let accessToken = this._cookies.get('access_token');
-        this._cookies.delete('access_token');
-        this._cookies.delete('refresh_token');
         return this._http.delete(this.baseUrl + '/users/logout',
-            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + accessToken }) })
+            { headers: new HttpHeaders({ 'Authorization': 'Bearer ' + this._cookies.get('access_token') }) })
             .pipe(
                 catchError(this.handleError)
             )
