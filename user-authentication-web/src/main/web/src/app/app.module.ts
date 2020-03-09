@@ -9,6 +9,7 @@ import { RegisterComponent } from './register/register.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { UserModule } from './user/user.module';
 
 @NgModule({
   declarations: [
@@ -18,9 +19,10 @@ import { CookieService } from 'ngx-cookie-service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    FormsModule,
     HttpClientModule,
+    FormsModule,
+    UserModule,
+    AppRoutingModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
