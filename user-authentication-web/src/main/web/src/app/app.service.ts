@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
@@ -6,13 +6,14 @@ import { retry, catchError } from 'rxjs/operators';
 import { Token } from './models/token';
 import { User } from './models/user';
 import { environment } from '../environments/environment';
+import { WINDOW } from 'src/_helpers/window.provider';
 
 @Injectable()
 export class AppService {
 
     baseUrl = environment.baseUrl;
 
-    constructor(private _http: HttpClient, private _cookies: CookieService) { }
+    constructor(@Inject(WINDOW) private _window: Window, private _http: HttpClient, private _cookies: CookieService) { }
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8', 'Authorization': 'Basic ' + btoa("fob-client:fob-secret") })
@@ -37,8 +38,12 @@ export class AppService {
         expireDate.setSeconds(expireDate.getSeconds() + token.expires_in);
         var expireDateRefresh = new Date();
         expireDateRefresh.setSeconds(expireDateRefresh.getSeconds() + 300);
-        this._cookies.set('access_token', token.access_token, expireDate, '/', 'localhost', false, 'Strict');
-        this._cookies.set('refresh_token', token.refresh_token, expireDateRefresh, '/', 'localhost', false, 'Strict');
+        this._cookies.set('access_token', token.access_token, expireDate, '/', this.getHostName(), false, 'Strict');
+        this._cookies.set('refresh_token', token.refresh_token, expireDateRefresh, '/', this.getHostName(), false, 'Strict');
+    }
+
+    getHostName(): string {
+        return this._window.location.hostname;
     }
 
     postUser(user): Observable<User> {

@@ -52,8 +52,8 @@ export class HomeComponent implements OnInit {
 
     if (this._cookies.get('access_token')) {
       this._service.logout().subscribe(() => {
-        this._cookies.delete('refresh_token');
-        this._cookies.delete('access_token');
+        this._cookies.delete('refresh_token', '/', this._service.getHostName());
+        this._cookies.delete('access_token', '/', this._service.getHostName());
         this._notifier.notify('success', 'User logged out successfully.');
         this._router.navigate(['/']);
       }, (error) => {
@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
         this._notifier.notify('error', this.errorMessage);
       });
     } else {
-      this._cookies.delete('refresh_token');
+      this._cookies.delete('refresh_token', '/', this._service.getHostName());
       this._notifier.notify('success', 'User logged out successfully.');
       this._router.navigate(['/']);
     }

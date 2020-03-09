@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { UserModule } from './user/user.module';
 import { NotifierModule } from "angular-notifier";
+import { WINDOW_PROVIDERS } from 'src/_helpers/window.provider';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { NotifierModule } from "angular-notifier";
     UserModule,
     AppRoutingModule,
   ],
-  providers: [CookieService],
+  providers: [CookieService, WINDOW_PROVIDERS],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

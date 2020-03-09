@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (this._cookies.get('access_token')) {
+        if (this._cookies.get('refresh_token')) {
             return true;
         }
         this._router.navigate(['/']);
