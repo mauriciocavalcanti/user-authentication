@@ -1,6 +1,7 @@
 package com.solutions.fob.userauthentication.model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.validation.constraints.NotNull;
@@ -139,7 +140,7 @@ public class User implements UserDetails {
   @Override
   public String toString() {
     return "{\"id\":\"" + id + "\",\"firstName\":\"" + firstName + "\",\"lastName\":\"" + lastName + "\",\"idCode\":\""
-        + idCode + "\",\"password\":\"" + password + "\",\"email\":\"" + email + "\",\"birthDate\":\"" + birthDate + "\"}";
+        + idCode + "\",\"password\":\"" + password + "\",\"email\":\"" + email + "\",\"birthDate\":\"" + birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\"}";
   }
 
   @Override
