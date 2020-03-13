@@ -2,7 +2,7 @@
 
 Simple user authentication application built with angular 9, spring boot (java 8) and mysql.\
 MySQL db instance is being hosted on heroku to make it easier to run the project.\
-Used OAuth2 for token management and in memory token store.\
+Used OAuth2 for token management and in memory token store.
  
 
 ## Installation
@@ -24,7 +24,7 @@ $ mvn spring-boot:run
 This will start the embedded tomcat on port 8080
 
 ### Running the client
-Install angular CLI with ```$ npm install -g @angular/cli```
+Install angular CLI with ```$ npm install -g @angular/cli```\
 On user-authentication-web/src/main/web folder, run the command
 ```
 $ ng serve
